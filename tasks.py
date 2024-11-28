@@ -4,6 +4,7 @@ from RPA.HTTP import HTTP
 from RPA.Tables import Tables
 from RPA.PDF import PDF
 from RPA.Archive import Archive
+from RPA.Assistant import Assistant
 
 
 @task
@@ -18,13 +19,23 @@ def order_robots_from_RobotSpareBin():
     browser.configure(
         slowmo=200,
     )
-    open_robot_order_website()
+    user_input_task()
     get_orders()
     archive_receipts()
 
-def open_robot_order_website():
+def open_robot_order_website(url):
     """Navigates to the given URL"""
-    browser.goto("https://robotsparebinindustries.com/#/robot-order")
+    """browser.goto("https://robotsparebinindustries.com/#/robot-order")"""
+    browser.goto(url)
+
+def user_input_task():
+    assistant = Assistant()
+    assistant.add_heading("Input from user")
+    assistant.add_text_input("text_input", placeholder="Please enter URL")
+    assistant.add_submit_buttons("Submit", default="Submit")
+    result = assistant.run_dialog()
+    url = result.text_input
+    open_robot_order_website(url)
 
 def close_annoying_modal():
     """Closes pop-up on the webpage"""
